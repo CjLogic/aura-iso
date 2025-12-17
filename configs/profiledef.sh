@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2034
 
-iso_name="omarchy"
-iso_label="OMARCHY_$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y%m)"
-iso_publisher="Omarchy <https://omarchy.org>"
-iso_application="Omarchy Installer"
+iso_name="aura"
+iso_label="AURA_$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y%m)"
+iso_publisher="Aura Linux <https://github.com/CjLogic/aura>"
+iso_application="Aura Installer"
 iso_version="$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y.%m.%d)"
 install_dir="arch"
 buildmodes=('iso')
@@ -21,6 +21,6 @@ file_permissions=(
   ["/root/.gnupg"]="0:0:700"
   ["/usr/local/bin/choose-mirror"]="0:0:755"
   ["/root/configurator"]="0:0:755"
-  ["/var/cache/omarchy/mirror/offline/"]="0:0:775"
-  ["/usr/local/bin/omarchy-upload-log"]="0:0:755"
+  ["/var/cache/aura/mirror/offline/"]="0:0:775"
+  ["/usr/local/bin/aura-upload-log"]="0:0:755"
 )

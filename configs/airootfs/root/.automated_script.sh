@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-use_omarchy_helpers() {
-  export OMARCHY_PATH="/root/omarchy"
-  export OMARCHY_INSTALL="/root/omarchy/install"
-  export OMARCHY_INSTALL_LOG_FILE="/var/log/omarchy-install.log"
-  source /root/omarchy/install/helpers/all.sh
+use_aura_helpers() {
+  export AURA_PATH="/root/aura"
+  export AURA_INSTALL="/root/aura/install"
+  export AURA_INSTALL_LOG_FILE="/var/log/aura-install.log"
+  source /root/aura/install/helpers/all.sh
 }
 
 run_configurator() {
   set_tokyo_night_colors
   ./configurator
-  export OMARCHY_USER="$(jq -r '.users[0].username' user_credentials.json)"
+  export AURA_USER="$(jq -r '.users[0].username' user_credentials.json)"
 }
 
 install_arch() {
@@ -19,23 +19,23 @@ install_arch() {
   gum style --foreground 3 --padding "1 0 0 $PADDING_LEFT" "Installing..."
   echo
 
-  touch /var/log/omarchy-install.log
+  touch /var/log/aura-install.log
 
   start_log_output
 
   # Set CURRENT_SCRIPT for the trap to display better when nothing is returned for some reason
   CURRENT_SCRIPT="install_base_system"
-  install_base_system > >(sed -u 's/\x1b\[[0-9;]*[a-zA-Z]//g' >>/var/log/omarchy-install.log) 2>&1
+  install_base_system > >(sed -u 's/\x1b\[[0-9;]*[a-zA-Z]//g' >>/var/log/aura-install.log) 2>&1
   unset CURRENT_SCRIPT
   stop_log_output
 }
 
-install_omarchy() {
+install_aura() {
   chroot_bash -lc "sudo pacman -S --noconfirm --needed gum" >/dev/null
-  chroot_bash -lc "source /home/$OMARCHY_USER/.local/share/omarchy/install.sh || bash"
+  chroot_bash -lc "source /home/$AURA_USER/.local/share/aura/install.sh || bash"
 
   # Reboot if requested by installer
-  if [[ -f /mnt/var/tmp/omarchy-install-completed ]]; then
+  if [[ -f /mnt/var/tmp/aura-install-completed ]]; then
     reboot
   fi
 }
@@ -71,7 +71,7 @@ install_base_system() {
   # Initialize and populate the keyring
   pacman-key --init
   pacman-key --populate archlinux
-  pacman-key --populate omarchy
+  pacman-key --populate aura
 
   # Sync the offline database so pacman can find packages
   pacman -Sy --noconfirm
@@ -94,48 +94,48 @@ install_base_system() {
   cp /etc/pacman.conf /mnt/etc/pacman.conf
 
   # Mount the offline mirror so it's accessible in the chroot
-  mkdir -p /mnt/var/cache/omarchy/mirror/offline
-  mount --bind /var/cache/omarchy/mirror/offline /mnt/var/cache/omarchy/mirror/offline
+  mkdir -p /mnt/var/cache/aura/mirror/offline
+  mount --bind /var/cache/aura/mirror/offline /mnt/var/cache/aura/mirror/offline
 
   # Mount the packages dir so it's accessible in the chroot
   mkdir -p /mnt/opt/packages
   mount --bind /opt/packages /mnt/opt/packages
 
-  # No need to ask for sudo during the installation (omarchy itself responsible for removing after install)
+  # No need to ask for sudo during the installation (aura itself responsible for removing after install)
   mkdir -p /mnt/etc/sudoers.d
-  cat >/mnt/etc/sudoers.d/99-omarchy-installer <<EOF
+  cat >/mnt/etc/sudoers.d/99-aura-installer <<EOF
 root ALL=(ALL:ALL) NOPASSWD: ALL
 %wheel ALL=(ALL:ALL) NOPASSWD: ALL
-$OMARCHY_USER ALL=(ALL:ALL) NOPASSWD: ALL
+$AURA_USER ALL=(ALL:ALL) NOPASSWD: ALL
 EOF
-  chmod 440 /mnt/etc/sudoers.d/99-omarchy-installer
+  chmod 440 /mnt/etc/sudoers.d/99-aura-installer
 
-  # Copy the local omarchy repo to the user's home directory
-  mkdir -p /mnt/home/$OMARCHY_USER/.local/share/
-  cp -r /root/omarchy /mnt/home/$OMARCHY_USER/.local/share/
+  # Copy the local aura repo to the user's home directory
+  mkdir -p /mnt/home/$AURA_USER/.local/share/
+  cp -r /root/aura /mnt/home/$AURA_USER/.local/share/
 
-  chown -R 1000:1000 /mnt/home/$OMARCHY_USER/.local/
+  chown -R 1000:1000 /mnt/home/$AURA_USER/.local/
 
   # Ensure all necessary scripts are executable
-  find /mnt/home/$OMARCHY_USER/.local/share/omarchy -type f -path "*/bin/*" -exec chmod +x {} \;
-  chmod +x /mnt/home/$OMARCHY_USER/.local/share/omarchy/boot.sh 2>/dev/null || true
-  chmod +x /mnt/home/$OMARCHY_USER/.local/share/omarchy/default/waybar/indicators/screen-recording.sh 2>/dev/null || true
+  find /mnt/home/$AURA_USER/.local/share/aura -type f -path "*/bin/*" -exec chmod +x {} \;
+  chmod +x /mnt/home/$AURA_USER/.local/share/aura/boot.sh 2>/dev/null || true
+  chmod +x /mnt/home/$AURA_USER/.local/share/aura/default/waybar/indicators/screen-recording.sh 2>/dev/null || true
 }
 
 chroot_bash() {
-  HOME=/home/$OMARCHY_USER \
-    arch-chroot -u $OMARCHY_USER /mnt/ \
-    env OMARCHY_CHROOT_INSTALL=1 \
-    OMARCHY_USER_NAME="$(<user_full_name.txt)" \
-    OMARCHY_USER_EMAIL="$(<user_email_address.txt)" \
-    USER="$OMARCHY_USER" \
-    HOME="/home/$OMARCHY_USER" \
+  HOME=/home/$AURA_USER \
+    arch-chroot -u $AURA_USER /mnt/ \
+    env AURA_CHROOT_INSTALL=1 \
+    AURA_USER_NAME="$(<user_full_name.txt)" \
+    AURA_USER_EMAIL="$(<user_email_address.txt)" \
+    USER="$AURA_USER" \
+    HOME="/home/$AURA_USER" \
     /bin/bash "$@"
 }
 
 if [[ $(tty) == "/dev/tty1" ]]; then
-  use_omarchy_helpers
+  use_aura_helpers
   run_configurator
   install_arch
-  install_omarchy
+  install_aura
 fi

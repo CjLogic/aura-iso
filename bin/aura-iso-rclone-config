@@ -1,0 +1,16 @@
+#!/bin/bash
+aura-pkg-add rclone
+mkdir -p ~/.config/rclone
+
+access_key=$(op read "op://Shared/Cloudflare Buckets/iso.aura.org/access_key_id" --account Aura)
+secret_access_key=$(op read "op://Shared/Cloudflare Buckets/iso.aura.org/secret_access_key" --account Aura)
+endpoint=$(op read "op://Shared/Cloudflare Buckets/iso.aura.org/endpoint" --account Aura)
+
+cat > ~/.config/rclone/rclone.conf << EOF
+[Aura]
+type = s3
+provider = Cloudflare
+access_key_id = $access_key
+secret_access_key = $secret_access_key
+endpoint = $endpoint
+EOF

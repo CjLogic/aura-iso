@@ -7,8 +7,15 @@ intel-ucode
 linux-firmware
 linux
 limine
-omarchy-keyring
+# aura-keyring  # TODO: Create aura package repository
 openssh
 pipewire
 snapper
 sof-firmware
+
+# Aura/Caelestia essentials for ISO
+hyprland
+greetd
+greetd-tuigreet
+fish
+foot
