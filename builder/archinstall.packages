@@ -7,7 +7,7 @@ intel-ucode
 linux-firmware
 linux
 limine
-# aura-keyring  # TODO: Create aura package repository
+omarchy-keyring
 openssh
 pipewire
 snapper

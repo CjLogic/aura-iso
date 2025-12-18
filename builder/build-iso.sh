@@ -7,9 +7,9 @@ pacman-key --init
 pacman --noconfirm -Sy archlinux-keyring
 pacman --noconfirm -Sy archiso git sudo base-devel jq grub
 
-# Install aura-keyring for package verification during build
+# Install omarchy-keyring for package verification during build
 # The [aura] repo is defined in /configs/pacman-online.conf with SigLevel = Optional TrustAll
-pacman --config /configs/pacman-online.conf --noconfirm -Sy aura-keyring
+pacman --config /configs/pacman-online.conf --noconfirm -Sy omarchy-keyring
 pacman-key --populate aura
 
 # Setup build locations
@@ -67,7 +67,7 @@ mkdir -p "$build_cache_dir/airootfs/opt/packages/"
 cp "/tmp/$NODE_FILENAME" "$build_cache_dir/airootfs/opt/packages/"
 
 # Add our additional packages to packages.x86_64
-arch_packages=(linux-t2 git gum jq openssl plymouth tzupdate aura-keyring)
+arch_packages=(linux-t2 git gum jq openssl plymouth tzupdate omarchy-keyring)
 printf '%s\n' "${arch_packages[@]}" >>"$build_cache_dir/packages.x86_64"
 
 # Build list of all the packages needed for the offline mirror

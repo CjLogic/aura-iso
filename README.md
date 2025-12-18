@@ -14,13 +14,13 @@ Run `./bin/aura-iso-make` and the output goes into `./release`. You can build fr
 
 You can customize the repositories used during the build process by passing in variables:
 
-- `aura_INSTALLER_REPO` - GitHub repository for the installer (default: `basecamp/aura`)
+- `aura_INSTALLER_REPO` - GitHub repository for the installer (default: `cjlogic/aura`)
 - `aura_INSTALLER_REF` - Git ref (branch/tag) for the installer (default: `master`)
 
 Example usage:
 
 ```bash
-aura_INSTALLER_REPO="myuser/aura-fork" aura_INSTALLER_REF="some-feature" ./bin/aura-iso-make
+aura_INSTALLER_REPO="cjlogic/aura" aura_INSTALLER_REF="some-feature" ./bin/aura-iso-make
 ```
 
 ## Testing the ISO
