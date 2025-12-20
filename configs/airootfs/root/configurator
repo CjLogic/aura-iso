@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Rely on Omarchy for styling and error handling
+# Rely on Aura for styling and error handling
 source "$AURA_INSTALL/helpers/all.sh"
 
 # Ensure tzupdate is available for guessing timezone
@@ -235,7 +235,7 @@ done
 clear
 
 # Save user full name and email address, so the autostart can
-# set them as OMARCHY_USER_NAME and OMARCHY_USER_EMAIL
+# set them as AURA_USER_NAME and AURA_USER_EMAIL
 echo "$full_name" >user_full_name.txt
 echo "$email_address" >user_email_address.txt
 

@@ -15,7 +15,6 @@ sof-firmware
 
 # Aura/Caelestia essentials for ISO
 hyprland
-greetd
-greetd-tuigreet
 fish
 foot
+ghostty
