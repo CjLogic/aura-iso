@@ -2,10 +2,6 @@
 
 The aura ISO streamlines [the installation of aura](https://learn.omacom.io/2/the-aura-manual/50/getting-started). It includes the aura Configurator as a front-end to archinstall and automatically launches the [aura Installer](https://github.com/basecamp/aura) after base arch has been setup.
 
-## Downloading the latest ISO
-
-See the ISO link on [aura.org](https://aura.org).
-
 ## Creating the ISO
 
 Run `./bin/aura-iso-make` and the output goes into `./release`. You can build from your local $aura_PATH for testing by using `--local-source` or from a checkout of the dev branch (instead of master) by using `--dev`.
