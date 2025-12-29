@@ -114,10 +114,31 @@ EOF
   mkdir -p /mnt/home/$AURA_USER/.local/share/
   cp -r /root/aura /mnt/home/$AURA_USER/.local/share/
 
-  chown -R 1000:1000 /mnt/home/$AURA_USER/.local/
+  # Copy /etc/skel contents to user's home directory
+  echo "Copying /etc/skel to user home directory..."
+  if [ -d "/etc/skel" ]; then
+    # Copy all files and folders from /etc/skel to user home
+    # Use -r for recursive, -p to preserve permissions, -n to not overwrite existing files
+    cp -rpn /etc/skel/. /mnt/home/$AURA_USER/
+    echo "  ✅ Copied /etc/skel contents to /home/$AURA_USER/"
+  else
+    echo "  ⚠️  WARNING: /etc/skel not found!"
+  fi
+
+  # Set correct ownership for all user files (including /etc/skel contents)
+  echo "Setting ownership for user home directory..."
+  chown -R 1000:1000 /mnt/home/$AURA_USER/
 
   # Ensure all necessary scripts are executable
+  echo "Making scripts executable..."
   find /mnt/home/$AURA_USER/.local/share/aura -type f -path "*/bin/*" -exec chmod +x {} \;
+  find /mnt/home/$AURA_USER/.local/share/aura -type f -path "*/first-run/*" -exec chmod +x {} \;
+
+  # Make all bin scripts from /etc/skel executable
+  if [ -d "/mnt/home/$AURA_USER/.local/bin" ]; then
+    chmod +x /mnt/home/$AURA_USER/.local/bin/* 2>/dev/null || true
+  fi
+
   chmod +x /mnt/home/$AURA_USER/.local/share/aura/boot.sh 2>/dev/null || true
   chmod +x /mnt/home/$AURA_USER/.local/share/aura/default/waybar/indicators/screen-recording.sh 2>/dev/null || true
 }

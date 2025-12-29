@@ -44,6 +44,11 @@ else
   git clone -b $AURA_INSTALLER_REF https://github.com/$AURA_INSTALLER_REPO.git "$build_cache_dir/airootfs/root/aura"
 fi
 
+# Note: We no longer copy source code to /root in the ISO
+# setup-skel.sh already copies source code to /etc/skel
+# New users automatically get source code in their home directory from /etc/skel
+# Users will install AUR packages with yay after first boot using install-aura-full
+
 # Make log uploader available in the ISO too
 mkdir -p "$build_cache_dir/airootfs/usr/local/bin/"
 cp "$build_cache_dir/airootfs/root/aura/bin/aura-upload-log" "$build_cache_dir/airootfs/usr/local/bin/aura-upload-log"
@@ -77,15 +82,54 @@ cp "/tmp/$NODE_FILENAME" "$build_cache_dir/airootfs/opt/packages/"
 arch_packages=(linux linux-headers git gum jq openssl plymouth tzupdate omarchy-keyring)
 printf '%s\n' "${arch_packages[@]}" >>"$build_cache_dir/packages.x86_64"
 
+# Extract dependencies from aura-cli and Aura-Shell PKGBUILDs
+echo "Extracting dependencies from aura-cli and Aura-Shell PKGBUILDs..."
+aura_deps=()
+
+# Extract aura-cli dependencies
+if [[ -d /aura-cli ]] && [[ -f /aura-cli/PKGBUILD ]]; then
+  echo "  - Extracting aura-cli dependencies..."
+  # Parse depends=() array from PKGBUILD
+  aura_cli_deps=$(grep "^depends=" /aura-cli/PKGBUILD | sed "s/depends=(//" | sed "s/)//" | tr -d "'" | tr -d '"')
+  for dep in $aura_cli_deps; do
+    aura_deps+=("$dep")
+  done
+  echo "    Found: $aura_cli_deps"
+fi
+
+# Extract Aura-Shell dependencies
+if [[ -d /Aura-Shell ]] && [[ -f /Aura-Shell/PKGBUILD ]]; then
+  echo "  - Extracting Aura-Shell dependencies..."
+  # Parse depends=() array from PKGBUILD
+  aura_shell_deps=$(grep "^depends=" /Aura-Shell/PKGBUILD | sed "s/depends=(//" | sed "s/)//" | tr -d "'" | tr -d '"')
+  for dep in $aura_shell_deps; do
+    aura_deps+=("$dep")
+  done
+  echo "    Found: $aura_shell_deps"
+fi
+
+# Add build tools needed for building AUR packages during installation
+echo "  - Adding build tools for aura-cli and aura-shell..."
+# Note: yay is built from source during installation (it's an AUR package)
+build_tools=(cmake ninja base-devel git)
+aura_deps+=("${build_tools[@]}")
+
+echo "  ✅ Total aura dependencies to pre-install: ${#aura_deps[@]}"
+
+# Add aura dependencies to packages.x86_64 so they get installed in the ISO
+printf '%s\n' "${aura_deps[@]}" >>"$build_cache_dir/packages.x86_64"
+
 # Build list of all the packages needed for the offline mirror
 all_packages=($(cat "$build_cache_dir/packages.x86_64"))
 all_packages+=($(grep -v '^#' "$build_cache_dir/airootfs/root/aura/install/aura-base.packages" | grep -v '^$'))
 all_packages+=($(grep -v '^#' "$build_cache_dir/airootfs/root/aura/install/aura-other.packages" | grep -v '^$'))
 all_packages+=($(grep -v '^#' /builder/archinstall.packages | grep -v '^$'))
 
-# Download all the packages to the offline mirror inside the ISO
+# Download official packages to the offline mirror
+echo "Downloading packages from official repos..."
 mkdir -p /tmp/offlinedb
 pacman --config /configs/pacman-online.conf --noconfirm -Syw "${all_packages[@]}" --cachedir $offline_mirror_dir/ --dbpath /tmp/offlinedb
+
 repo-add --new "$offline_mirror_dir/offline.db.tar.gz" "$offline_mirror_dir/"*.pkg.tar.zst
 
 # Create a symlink to the offline mirror instead of duplicating it.

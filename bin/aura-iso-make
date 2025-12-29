@@ -62,6 +62,26 @@ if [[ -n "${LOCAL_SOURCE-}" ]]; then
   DOCKER_ARGS+=(-v "$AURA_PATH:/aura:ro")
 fi
 
+# Mount aura-cli and Aura-Shell sources
+AURA_CLI_PATH="$BUILD_ROOT/../aura-cli"
+AURA_SHELL_PATH="$BUILD_ROOT/../Aura-Shell"
+if [ -d "$AURA_CLI_PATH" ]; then
+  DOCKER_ARGS+=(-v "$AURA_CLI_PATH:/aura-cli:ro")
+fi
+if [ -d "$AURA_SHELL_PATH" ]; then
+  DOCKER_ARGS+=(-v "$AURA_SHELL_PATH:/Aura-Shell:ro")
+fi
+
+# Mount pre-built AUR packages repository
+AURA_REPO_PATH="$HOME/aura-repo"
+if [ -d "$AURA_REPO_PATH" ]; then
+  echo "Found pre-built AUR packages at $AURA_REPO_PATH"
+  DOCKER_ARGS+=(-v "$AURA_REPO_PATH:/aura-repo:ro")
+else
+  echo "⚠️  No pre-built AUR packages found at $AURA_REPO_PATH"
+  echo "   Run ./build-aura-repo-full.sh to build AUR packages first"
+fi
+
 # Use local pacman cache if you already have one on host to speed up repeat runs
 if [ -d "/var/cache/pacman/pkg" ]; then
   DOCKER_ARGS+=(-v "/var/cache/pacman/pkg:/var/cache/pacman/pkg")
@@ -76,6 +96,10 @@ if [[ -z "$NO_CACHE" ]]; then
   # Mount to /var/cache/airootfs/var/cache/aura since that's where repo packages go in the ISO
   DOCKER_ARGS+=(-v "$OFFLINE_REPO_BUILD_CACHE_DIR:/var/cache/airootfs/var/cache/aura")
 fi
+
+# Setup /etc/skel with Aura configs before building
+echo "Setting up /etc/skel with Aura configs..."
+"$BUILD_ROOT/configs/setup-skel.sh"
 
 # Run the builder with assembled args
 docker run "${DOCKER_ARGS[@]}" archlinux/archlinux:latest /$BUILD_SCRIPT
