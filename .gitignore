@@ -1,0 +1,4 @@
+release/**
+vm-saves/**
+archiso.fresh
+.env
