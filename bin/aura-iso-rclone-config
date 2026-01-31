@@ -13,9 +13,6 @@ if [[ ! -f "$ENV_FILE" ]]; then
   exit 1
 fi
 
-# Install rclone if needed
-aura-pkg-add rclone
-
 # Load environment variables from .env
 source "$ENV_FILE"
 

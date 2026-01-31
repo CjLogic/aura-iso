@@ -10,8 +10,8 @@ if [[ ! -f ~/.config/rclone/rclone.conf ]]; then
   exit 1
 fi
 
-rclone copy $1 Aura:aura/ -P
+rclone copy $1 Aura:aura-iso/ -P
 
 if [[ -f $1.sig ]]; then
-  rclone copy $1.sig Aura:aura/ -P
+  rclone copy $1.sig Aura:aura-iso/ -P
 fi
