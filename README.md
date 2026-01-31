@@ -1,4 +1,4 @@
-# aura ISO
+# Aura ISO
 
 The aura ISO streamlines [the installation of Aura](https://github.com/CjLogic/Aura). It includes the aura Configurator as a front-end to archinstall and automatically launches the [Aura Installer](https://github.com/CjLogic/Aura) after base arch has been setup.
 
@@ -11,7 +11,7 @@ Run `./bin/aura-iso-make` and the output goes into `./release`. You can build fr
 You can customize the repositories used during the build process by passing in variables:
 
 - `aura_INSTALLER_REPO` - GitHub repository for the installer (default: `cjlogic/aura`)
-- `aura_INSTALLER_REF` - Git ref (branch/tag) for the installer (default: `master`)
+- `aura_INSTALLER_REF` - Git ref (branch/tag) for the installer (default: `main`)
 
 Example usage:
 
