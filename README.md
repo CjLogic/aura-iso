@@ -2,6 +2,16 @@
 
 The aura ISO streamlines [the installation of Aura](https://github.com/CjLogic/Aura). It includes the aura Configurator as a front-end to archinstall and automatically launches the [Aura Installer](https://github.com/CjLogic/Aura) after base arch has been setup.
 
+## System Requirements
+
+if you have  Asus Hardware check this out [Asus Compatibility Guide](ASUS-COMPATIBILITY.md)
+
+- **RAM**: 2GB minimum (4GB recommended)
+- **Disk Space**: 20GB minimum
+- **CPU**: x86_64 processor
+- **Graphics**: GPU with Wayland support recommended
+- **Boot**: UEFI or BIOS
+
 ## Creating the ISO
 
 Run `./bin/aura-iso-make` and the output goes into `./release`. You can build from your local $aura_PATH for testing by using `--local-source` or from a checkout of the dev branch (instead of master) by using `--dev`.

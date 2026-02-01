@@ -236,6 +236,14 @@ disk_form() {
 
 disk_form
 
+# Detect ASUS hardware and inform user
+IS_ASUS=false
+if grep -qi "ASUSTeK" /sys/class/dmi/id/sys_vendor 2>/dev/null; then
+  IS_ASUS=true
+  PRODUCT_NAME=$(cat /sys/class/dmi/id/product_name 2>/dev/null || echo "ASUS Laptop")
+  notice "ASUS hardware detected: $PRODUCT_NAME - Aura will use systemd-boot for optimal ASUS/AMI firmware compatibility" 3
+fi
+
 while true; do
   gum style "Everything will be overwritten. There is no recovery possible."
 
@@ -294,13 +302,22 @@ else
   kernel_choice="linux"
 fi
 
+# Choose bootloader based on hardware
+# ASUS/AMI firmware has issues with GRUB and works better with systemd-boot
+# Other systems use Limine with UKI support
+if [[ "$IS_ASUS" == "true" ]]; then
+  bootloader_choice="Systemd-boot"
+else
+  bootloader_choice="Limine"
+fi
+
 cat <<-_EOF_ >user_configuration.json
 {
     "app_config": null,
     "archinstall-language": "English",
     "auth_config": {},
     "audio_config": { "audio": "pipewire" },
-    "bootloader": "Limine",
+    "bootloader": "$bootloader_choice",
     "custom_commands": [],
     "disk_config": {
         "btrfs_options": {

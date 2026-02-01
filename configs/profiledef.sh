@@ -8,7 +8,8 @@ iso_application="Aura Installer"
 iso_version="$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y.%m.%d)"
 install_dir="arch"
 buildmodes=('iso')
-bootmodes=('bios.syslinux' 'uefi.grub')
+# Boot modes: Legacy BIOS + UEFI (systemd-boot prioritized for ASUS compatibility, GRUB as fallback)
+bootmodes=('bios.syslinux' 'uefi.systemd-boot' 'uefi.grub')
 arch="x86_64"
 pacman_conf="pacman.conf"
 airootfs_image_type="squashfs"
