@@ -1,0 +1,38 @@
+# Aura GRUB Theme
+
+# Desktop (background)
+desktop-image: "background.png"
+desktop-color: "#000000"
+
+# Title
+title-text: "Aura Linux"
+title-font: "Unifont Regular 16"
+title-color: "#40ffffff"
+
+# Boot menu
++ boot_menu {
+    left = 15%
+    top = 35%
+    width = 70%
+    height = 50%
+    item_font = "Unifont Regular 16"
+    item_color = "#cccccc"
+    selected_item_font = "Unifont Regular 16"
+    selected_item_color = "#40ffffff"
+    item_height = 28
+    item_padding = 5
+    item_spacing = 10
+    selected_item_pixmap_style = "select_*.png"
+}
+
+# Countdown message
++ label {
+    left = 0
+    top = 90%
+    width = 100%
+    align = "center"
+    id = "__timeout__"
+    text = "Booting in %d seconds..."
+    font = "Unifont Regular 14"
+    color = "#888888"
+}

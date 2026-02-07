@@ -37,6 +37,14 @@ rm -rf "$build_cache_dir/airootfs/etc/xdg/reflector"
 # Bring in our configs
 cp -r /configs/* $build_cache_dir/
 
+# Copy GRUB background to multiple locations where GRUB might look for it
+if [[ -f $build_cache_dir/grub/background.png ]]; then
+  mkdir -p "$build_cache_dir/boot/grub"
+  cp "$build_cache_dir/grub/background.png" "$build_cache_dir/boot/grub/background.png"
+  # Also copy to ISO root for fallback
+  cp "$build_cache_dir/grub/background.png" "$build_cache_dir/background.png"
+fi
+
 # Setup Aura itself
 if [[ -d /aura ]]; then
   cp -rp /aura "$build_cache_dir/airootfs/root/aura"
@@ -74,7 +82,9 @@ mkdir -p "$build_cache_dir/airootfs/opt/packages/"
 cp "/tmp/$NODE_FILENAME" "$build_cache_dir/airootfs/opt/packages/"
 
 # Add our additional packages to packages.x86_64
-arch_packages=(linux linux-headers git gum jq openssl plymouth tzupdate omarchy-keyring)
+# linux: Default kernel for regular users
+# linux-t2: Kernel for Apple Mac T2 users (from arch-mact2 repo)
+arch_packages=(linux linux-headers linux-t2 linux-t2-headers git gum jq openssl plymouth tzupdate omarchy-keyring)
 printf '%s\n' "${arch_packages[@]}" >>"$build_cache_dir/packages.x86_64"
 
 # Build list of all the packages needed for the offline mirror
