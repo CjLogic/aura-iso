@@ -1,6 +1,6 @@
 # Aura ISO
 
-The aura ISO streamlines [the installation of Aura](https://github.com/CjLogic/Aura). It includes the aura Configurator as a front-end to archinstall and automatically launches the [Aura Installer](https://github.com/CjLogic/Aura) after base arch has been setup.
+The aura ISO streamlines [the installation of Aura](https://github.com/CjLogic/Aura-Ambxst). It includes the aura Configurator as a front-end to archinstall and automatically launches the [Aura Installer](https://github.com/CjLogic/Aura-Ambxst) after base arch has been setup.
 
 ## System Requirements
 

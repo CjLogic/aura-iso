@@ -3,7 +3,7 @@
 
 iso_name="aura"
 iso_label="AURA_$"
-iso_publisher="Aura Linux <https://github.com/CjLogic/aura>"
+iso_publisher="Aura Linux <https://github.com/CjLogic/Aura-Ambxst>"
 iso_application="Aura Installer"
 iso_version="$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y.%m.%d)"
 install_dir="arch"
